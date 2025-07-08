@@ -84,6 +84,9 @@ class TierList extends React.Component {
           const collectionKey = `${card.id}_${card.limit_break}`;
           return this.props.collection.has(collectionKey);
         });
+      } else {
+        // If collection is empty, show only MLB cards
+        cards = cards.filter((card) => card.limit_break === 4);
       }
     }
 

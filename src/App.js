@@ -120,7 +120,7 @@ class App extends React.Component {
   updateAvailableCards() {
     let availableCards = filterGlobalCards(cards);
 
-    // If collection is empty, show only lb4 cards
+    // If collection is empty, treat as owning all MLB cards
     if (!this.state.collection || this.state.collection.size === 0) {
       availableCards = availableCards.filter((card) => card.limit_break === 4);
     } else {
@@ -162,6 +162,12 @@ class App extends React.Component {
       cards[index] = card;
     } else {
       cards.push(card);
+    }
+
+    // If collection is empty, don't restrict selection (treat as owning all MLB cards)
+    if (!this.state.collection || this.state.collection.size === 0) {
+      this.setState({ selectedCards: cards });
+      return;
     }
 
     // Ensure the selected card is in the collection

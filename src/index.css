@@ -133,19 +133,16 @@ code {
   padding-bottom: 10px;
 }
 
+/* Table and card containers */
 table {
-  width: 450px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
 
-td {
-  width: 150px;
-}
-
+td,
 th {
-  width: 150px;
-  padding-right: 40px;
+  width: 10em;
 }
 
 .section-header {
@@ -173,13 +170,13 @@ label {
 }
 
 .slider {
-  width: 300px;
+  width: 18em;
 }
 
 .image-btn {
-  width: 50px;
-  height: 50px;
-  padding-top: 15px;
+  width: 3em;
+  height: 3em;
+  padding-top: 0.8em;
 }
 
 .selected {
@@ -252,13 +249,13 @@ label {
 
 /* Collection Manager Styles */
 .collection-manager {
-  margin: 20px auto;
-  padding: 20px;
+  margin: 2em auto;
+  padding: 2em;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 0.5em;
   background-color: #f9f9f9;
-  max-width: 1200px;
-  width: 90%;
+  max-width: 90vw;
+  width: 95%;
 }
 
 .collection-header {
@@ -282,8 +279,8 @@ label {
 .collection-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 1em;
+  margin-bottom: 2em;
   align-items: center;
 }
 
@@ -306,6 +303,11 @@ label {
   gap: 10px;
 }
 
+.bulk-actions .btn {
+  min-width: 6em;
+  padding: 0.5em 1em;
+}
+
 .collection-stats {
   display: flex;
   justify-content: space-between;
@@ -320,9 +322,9 @@ label {
 
 .collection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-  max-height: 600px;
+  grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
+  gap: 1em;
+  max-height: 37em;
   overflow-y: auto;
 }
 
@@ -423,7 +425,7 @@ label {
 
 /* Form controls */
 .form-control {
-  padding: 8px 12px;
+  padding: 0.5em 0.75em;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
@@ -437,7 +439,7 @@ label {
 
 /* Button styles */
 .btn {
-  padding: 8px 16px;
+  padding: 0.5em 1em;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -483,7 +485,7 @@ label {
 
 .no-cards-message {
   text-align: center;
-  padding: 40px 20px;
+  padding: 2em 1em;
   color: #666;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -573,7 +575,8 @@ label {
 
 /* Tier list container style */
 .tier-list-container {
-  max-width: 900px;
+  width: 95%;
+  max-width: 70em;
   margin: 0 auto 24px auto;
   padding: 8px 24px 16px 24px;
   background: #fff;
