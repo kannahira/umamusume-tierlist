@@ -77,9 +77,11 @@ function SupportCard(props) {
         <span className="lb-yes">{lit_up}</span>
         <span className="lb-no">{dark}</span>
       </span>
-      <span className="score" onClick={() => console.log(props.info)}>
-        {Math.round(props.score)}
-      </span>
+      {!props.hideScore && (
+        <span className="score" onClick={() => console.log(props.info)}>
+          {Math.round(props.score)}
+        </span>
+      )}
       <span className="stat-1">{statDisplays[0]}</span>
       <span className="stat-2">{statDisplays[1]}</span>
       <span className="stat-3">{statDisplays[2]}</span>

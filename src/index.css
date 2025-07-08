@@ -204,11 +204,13 @@ label {
 
 /* Collection Manager Styles */
 .collection-manager {
-  margin: 20px 0;
+  margin: 20px auto;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #f9f9f9;
+  max-width: 1200px;
+  width: 90%;
 }
 
 .collection-header {
@@ -216,11 +218,17 @@ label {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 20px;
 }
 
 .collection-header h3 {
   margin: 0;
   color: #333;
+  flex: 1;
+}
+
+.collection-header .btn {
+  flex-shrink: 0;
 }
 
 .collection-controls {

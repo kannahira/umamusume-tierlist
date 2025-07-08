@@ -5,6 +5,11 @@ import Weights from './components/Weights';
 import SelectedCards from './components/SelectedCards';
 import CollectionManager from './components/CollectionManager';
 import React from 'react';
+import {
+  GLOBAL_LATEST_R_ID,
+  GLOBAL_LATEST_SR_ID,
+  GLOBAL_LATEST_SSR_ID,
+} from './constants';
 
 const ordinal = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th'];
 const type_names = [
@@ -17,9 +22,25 @@ const type_names = [
   'Friend',
 ];
 
+// Helper to filter cards for global
+function filterGlobalCards(cardList) {
+  return cardList.filter((card) => {
+    if (card.rarity === 1) return card.id <= GLOBAL_LATEST_R_ID;
+    if (card.rarity === 2) return card.id <= GLOBAL_LATEST_SR_ID;
+    if (card.rarity === 3) return card.id <= GLOBAL_LATEST_SSR_ID;
+    return false;
+  });
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
+    // Filter cards for global on initial load
+    let globalCards = filterGlobalCards(cards);
+    let initialCollection = new Set();
+    let initialAvailableCards = globalCards.filter(
+      (card) => card.limit_break === 4,
+    );
     this.state = {
       weights: {
         type: 0,
@@ -60,9 +81,9 @@ class App extends React.Component {
         onlySummer: false,
       },
       selectedCards: [],
-      availableCards: cards,
+      availableCards: initialAvailableCards,
       label: 'Ranking for the 4th Speed card in this deck:',
-      collection: new Set(), // Set of "cardId_limitBreak" strings
+      collection: initialCollection,
     };
 
     this.onWeightsChanged = this.onWeightsChanged.bind(this);
@@ -95,11 +116,14 @@ class App extends React.Component {
   }
 
   updateAvailableCards() {
-    let availableCards = cards;
+    let availableCards = filterGlobalCards(cards);
 
-    // Filter by collection if there are cards in the collection
-    if (this.state.collection && this.state.collection.size > 0) {
-      availableCards = cards.filter((card) => {
+    // If collection is empty, show only lb4 cards
+    if (!this.state.collection || this.state.collection.size === 0) {
+      availableCards = availableCards.filter((card) => card.limit_break === 4);
+    } else {
+      // Filter by collection if there are cards in the collection
+      availableCards = availableCards.filter((card) => {
         const collectionKey = `${card.id}_${card.limit_break}`;
         return this.state.collection.has(collectionKey);
       });
@@ -162,22 +186,24 @@ class App extends React.Component {
     this.setState({ selectedCards: selectedCards });
   }
 
-  onCollectionChange(cardId, limitBreak) {
-    const collectionKey = `${cardId}_${limitBreak}`;
-    const newCollection = new Set(this.state.collection);
-
-    if (newCollection.has(collectionKey)) {
-      newCollection.delete(collectionKey);
+  onCollectionChange(cardId, limitBreak, newCollection) {
+    let collectionToUse;
+    if (newCollection) {
+      collectionToUse = new Set(newCollection);
     } else {
-      newCollection.add(collectionKey);
+      const collectionKey = `${cardId}_${limitBreak}`;
+      collectionToUse = new Set(this.state.collection);
+      if (collectionToUse.has(collectionKey)) {
+        collectionToUse.delete(collectionKey);
+      } else {
+        collectionToUse.add(collectionKey);
+      }
     }
-
-    this.setState({ collection: newCollection });
-
+    this.setState({ collection: collectionToUse });
     // Save to localStorage
     localStorage.setItem(
       'umaCollection',
-      JSON.stringify(Array.from(newCollection)),
+      JSON.stringify(Array.from(collectionToUse)),
     );
   }
 
@@ -186,11 +212,16 @@ class App extends React.Component {
     localStorage.removeItem('umaCollection');
   }
 
-  onSelectAll() {
-    const allCards = new Set();
-    cards.forEach((card) => {
-      allCards.add(`${card.id}_${card.limit_break}`);
-    });
+  onSelectAll(allCardsSet) {
+    let allCards;
+    if (allCardsSet) {
+      allCards = new Set(allCardsSet);
+    } else {
+      allCards = new Set();
+      cards.forEach((card) => {
+        allCards.add(`${card.id}_${card.limit_break}`);
+      });
+    }
     this.setState({ collection: allCards });
     localStorage.setItem('umaCollection', JSON.stringify(Array.from(allCards)));
   }
