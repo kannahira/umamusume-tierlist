@@ -17,15 +17,15 @@ function SupportCard(props) {
 
   for (let i = 0; i < 3; i++) {
     let stat = props.stats[i];
-    if (stat == 'none' || !stat) continue;
+    if (stat === 'none' || !stat) continue;
     if (!props.card || !props.card[stat]) continue;
 
     let value = props.card[stat];
-    if (stat == 'fs_bonus') {
+    if (stat === 'fs_bonus') {
       console.log('pre: ' + value);
       value *= props.card['unique_fs_bonus'] || 1;
       console.log(value);
-    } else if (stat == 'specialty_rate') {
+    } else if (stat === 'specialty_rate') {
       value =
         (value + 100) *
           (props.card['unique_specialty'] || 1) *
@@ -34,7 +34,7 @@ function SupportCard(props) {
     }
     if (value < 1) {
       value *= 100;
-    } else if (value < 2 && stat != 'race_bonus') {
+    } else if (value < 2 && stat !== 'race_bonus') {
       value -= 1;
       value *= 100;
     }
@@ -46,17 +46,23 @@ function SupportCard(props) {
 
   const alreadySelected =
     props.selected && props.selected.indexOf(props.charName) > -1;
+  const isDisabled = props.disabled;
 
   // Check if this specific card variant is owned (for collection manager)
   const isOwned =
     props.showOwnership &&
     props.ownedLimitBreaks &&
     props.ownedLimitBreaks.includes(props.lb);
-  const cardClass = alreadySelected
-    ? 'support-card-image selected'
-    : props.showOwnership && !isOwned
-    ? 'support-card-image not-owned'
-    : 'support-card-image';
+  let cardClass;
+  if (isDisabled) {
+    cardClass = 'support-card-image disabled';
+  } else if (alreadySelected) {
+    cardClass = 'support-card-image selected';
+  } else if (props.showOwnership && !isOwned) {
+    cardClass = 'support-card-image not-owned';
+  } else {
+    cardClass = 'support-card-image';
+  }
 
   return (
     <div className="support-card">
@@ -71,7 +77,7 @@ function SupportCard(props) {
         }
         title={props.charName}
         alt={props.charName}
-        onClick={alreadySelected ? () => {} : props.onClick}
+        onClick={isDisabled ? () => {} : props.onClick}
       />
       <span className="limit-breaks">
         <span className="lb-yes">{lit_up}</span>

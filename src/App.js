@@ -81,6 +81,7 @@ class App extends React.Component {
         onlySummer: false,
       },
       selectedCards: [],
+      borrowedCard: null, // Track the borrowed card separately
       availableCards: initialAvailableCards,
       label: 'Ranking for the 4th Speed card in this deck:',
       collection: initialCollection,
@@ -89,6 +90,7 @@ class App extends React.Component {
     this.onWeightsChanged = this.onWeightsChanged.bind(this);
     this.onCardSelected = this.onCardSelected.bind(this);
     this.onCardRemoved = this.onCardRemoved.bind(this);
+    this.onBorrowedCardRemoved = this.onBorrowedCardRemoved.bind(this);
     this.onLoadPreset = this.onLoadPreset.bind(this);
     this.onCollectionChange = this.onCollectionChange.bind(this);
     this.onClearCollection = this.onClearCollection.bind(this);
@@ -138,9 +140,23 @@ class App extends React.Component {
   }
 
   onCardSelected(card) {
-    if (this.state.selectedCards.length > 5) return;
+    // Prevent adding the borrowed card as a normal card
+    if (this.state.borrowedCard && this.state.borrowedCard.id === card.id) {
+      return;
+    }
     let cards = this.state.selectedCards.slice();
     let index = this.state.selectedCards.findIndex((c) => c.id === card.id);
+
+    // If we have 5 cards and this is a different card, treat it as the borrowed card
+    if (this.state.selectedCards.length === 5 && index === -1) {
+      // Set as borrowed card (always MLB)
+      const borrowedCard = { ...card, limit_break: 4 };
+      this.setState({ borrowedCard: borrowedCard });
+      return;
+    }
+
+    // Normal card selection (0-4 cards)
+    if (this.state.selectedCards.length >= 5) return; // Maximum 5 cards for owned cards
 
     if (index > -1) {
       cards[index] = card;
@@ -176,6 +192,10 @@ class App extends React.Component {
     this.setState({ selectedCards: cards });
   }
 
+  onBorrowedCardRemoved(card) {
+    this.setState({ borrowedCard: null });
+  }
+
   onLoadPreset(presetCards) {
     let selectedCards = [];
     for (let i = 0; i < presetCards.length; i++) {
@@ -199,7 +219,9 @@ class App extends React.Component {
         collectionToUse.add(collectionKey);
       }
     }
+
     this.setState({ collection: collectionToUse });
+
     // Save to localStorage
     localStorage.setItem(
       'umaCollection',
@@ -213,17 +235,11 @@ class App extends React.Component {
   }
 
   onSelectAll(allCardsSet) {
-    let allCards;
-    if (allCardsSet) {
-      allCards = new Set(allCardsSet);
-    } else {
-      allCards = new Set();
-      cards.forEach((card) => {
-        allCards.add(`${card.id}_${card.limit_break}`);
-      });
-    }
-    this.setState({ collection: allCards });
-    localStorage.setItem('umaCollection', JSON.stringify(Array.from(allCards)));
+    this.setState({ collection: allCardsSet });
+    localStorage.setItem(
+      'umaCollection',
+      JSON.stringify(Array.from(allCardsSet)),
+    );
   }
 
   render() {
@@ -236,8 +252,8 @@ class App extends React.Component {
             Uma Musume Reference
           </a>
           <br />
-          This tier list defaults to the Grandmasters Scenario and doesn't
-          consider skills, only stats.
+          This tier list defaults to the URA Scenario and doesn't consider
+          skills, only stats.
           <br />
         </span>
         <Weights onChange={this.onWeightsChanged} />
@@ -249,16 +265,22 @@ class App extends React.Component {
         />
         <SelectedCards
           selectedCards={this.state.selectedCards}
+          borrowedCard={this.state.borrowedCard}
           onClick={this.onCardRemoved}
-          onLoadPreset={this.onLoadPreset}
+          onBorrowedCardRemoved={this.onBorrowedCardRemoved}
           weights={this.state.weights}
         />
         <TierList
-          cards={this.state.availableCards}
+          cards={filterGlobalCards(cards)}
           weights={this.state.weights}
           selectedCards={this.state.selectedCards}
           cardSelected={this.onCardSelected}
           collection={this.state.collection}
+          borrowedCard={this.state.borrowedCard}
+          type={this.state.weights.type}
+          onTypeChange={(type) =>
+            this.setState({ weights: { ...this.state.weights, type } })
+          }
         />
       </div>
     );

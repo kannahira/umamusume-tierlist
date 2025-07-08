@@ -202,6 +202,54 @@ label {
   margin-bottom: 10px;
 }
 
+/* Stat Contribution Summary Styles */
+.contribution-summary {
+  margin: 15px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.contribution-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.contribution-item {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+.contribution-0 {
+  border-left: 4px solid #ff6b6b;
+} /* Speed - Red */
+.contribution-1 {
+  border-left: 4px solid #4ecdc4;
+} /* Stamina - Cyan */
+.contribution-2 {
+  border-left: 4px solid #45b7d1;
+} /* Power - Blue */
+.contribution-3 {
+  border-left: 4px solid #96ceb4;
+} /* Guts - Green */
+.contribution-4 {
+  border-left: 4px solid #feca57;
+} /* Wisdom - Yellow */
+.contribution-5 {
+  border-left: 4px solid #ff9ff3;
+} /* Skill - Pink */
+.contribution-6 {
+  border-left: 4px solid #a8e6cf;
+} /* Energy - Light Green */
+
 /* Collection Manager Styles */
 .collection-manager {
   margin: 20px auto;
@@ -365,6 +413,14 @@ label {
   filter: grayscale(100%) opacity(0.7);
 }
 
+.support-card-image.disabled {
+  filter: grayscale(100%) opacity(0.5) !important;
+  cursor: not-allowed !important;
+  border: 2px solid #aaa !important;
+  box-shadow: none !important;
+  background: #eee !important;
+}
+
 /* Form controls */
 .form-control {
   padding: 8px 12px;
@@ -455,4 +511,109 @@ label {
   vertical-align: center;
   padding-right: 10px;
   padding-top: 6px;
+}
+
+/* Borrowed Card Styles */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.borrowed-separator {
+  width: 20px;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, #ddd, transparent);
+  margin: 0 10px;
+}
+
+.borrowed-card {
+  position: relative;
+  border: 2px solid #4caf50;
+}
+
+.borrowed-label {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #4caf50;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.total-score {
+  margin: 10px auto;
+  padding: 10px 20px;
+  background-color: #f0f8ff;
+  border: 1px solid #4caf50;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #2e7d32;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Selected card score style */
+.selected-card-score {
+  margin-top: 4px;
+  font-size: 0.95em;
+  color: #2e7d32;
+  background: #f0f8ff;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+/* Tier list container style */
+.tier-list-container {
+  max-width: 900px;
+  margin: 0 auto 24px auto;
+  padding: 8px 24px 16px 24px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.score-breakdown {
+  margin: 8px auto 0 auto;
+  font-size: 14px;
+  color: #333;
+  background: #f8f9fa;
+  border-radius: 4px;
+  padding: 6px 12px;
+  display: inline-block;
+  text-align: left;
+}
+
+.type-filter-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.type-filter-btn {
+  background: #f8f9fa;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+.type-filter-btn.selected {
+  background: #4caf50;
+  color: #fff;
+  border-color: #388e3c;
+}
+.type-filter-btn:hover {
+  background: #e0f2f1;
 }

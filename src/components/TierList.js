@@ -3,6 +3,12 @@ import SupportCard from './SupportCard';
 import events from '../card-events';
 import { supportCardProperties } from '../constants';
 import Select from 'react-select';
+import SpeedIcon from '../icons/utx_ico_obtain_00.png';
+import StaminaIcon from '../icons/utx_ico_obtain_01.png';
+import PowerIcon from '../icons/utx_ico_obtain_02.png';
+import GutsIcon from '../icons/utx_ico_obtain_03.png';
+import WisdomIcon from '../icons/utx_ico_obtain_04.png';
+import FriendIcon from '../icons/utx_ico_obtain_05.png';
 
 const ordinal = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th'];
 const type_names = [
@@ -13,6 +19,16 @@ const type_names = [
   'Wisdom',
   '',
   'Friend',
+];
+
+const typeIcons = [
+  SpeedIcon,
+  StaminaIcon,
+  PowerIcon,
+  GutsIcon,
+  WisdomIcon,
+  '',
+  FriendIcon,
 ];
 
 class TierList extends React.Component {
@@ -32,7 +48,6 @@ class TierList extends React.Component {
   onDropdown1Changed(newValue) {
     let newSelections = this.state.dropdownSelections.slice();
     newSelections[0] = newValue.value;
-    console.log(newValue);
     this.setState({ dropdownSelections: newSelections });
   }
   onDropdown2Changed(newValue) {
@@ -49,17 +64,27 @@ class TierList extends React.Component {
   render() {
     let cards = this.props.cards;
     let selectedNames = this.props.selectedCards.map((card) => card.char_name);
+    if (this.props.borrowedCard) {
+      selectedNames.push(this.props.borrowedCard.char_name);
+    }
+    let isBorrowingMode = this.props.selectedCards.length === 5;
 
-    // Filter cards based on collection (only show owned cards)
-    if (this.props.collection && this.props.collection.size > 0) {
-      cards = cards.filter((card) => {
-        const collectionKey = `${card.id}_${card.limit_break}`;
-        return this.props.collection.has(collectionKey);
-      });
+    // Filter by card type first
+    if (this.props.type > -1) {
+      cards = cards.filter((e) => e.type === this.props.type);
     }
 
-    if (this.props.weights.type > -1) {
-      cards = cards.filter((e) => e.type === this.props.weights.type);
+    // If in borrowing mode, show all MLB cards (not filtered by collection)
+    if (isBorrowingMode) {
+      cards = cards.filter((card) => card.limit_break === 4);
+    } else {
+      // Filter cards based on collection (only show owned cards when not in borrowing mode)
+      if (this.props.collection && this.props.collection.size > 0) {
+        cards = cards.filter((card) => {
+          const collectionKey = `${card.id}_${card.limit_break}`;
+          return this.props.collection.has(collectionKey);
+        });
+      }
     }
 
     let processedCards = processCards(
@@ -68,24 +93,17 @@ class TierList extends React.Component {
       this.props.selectedCards,
     );
 
-    if (processedCards.length === 0) {
-      return (
-        <div className="tier-list">
-          <div className="no-cards-message">
-            <p>No cards available for the current selection.</p>
-            <p>Please add cards to your collection or adjust your filters.</p>
-          </div>
-        </div>
-      );
-    }
-
     let rows = [[]];
     let current_row = 0;
-    let step =
-      (processedCards[0].score -
-        processedCards[processedCards.length - 1].score) /
-      7;
-    let boundary = processedCards[0].score - step;
+    let step = 1;
+    let boundary = 0;
+    if (processedCards.length > 0) {
+      step =
+        (processedCards[0].score -
+          processedCards[processedCards.length - 1].score) /
+        7;
+      boundary = processedCards[0].score - step;
+    }
 
     for (let i = 0; i < processedCards.length; i++) {
       while (processedCards[i].score < boundary - 1) {
@@ -94,10 +112,11 @@ class TierList extends React.Component {
         boundary -= step;
       }
 
+      const isDisabled = selectedNames.includes(processedCards[i].char_name);
       rows[current_row].push(
         <SupportCard
           id={processedCards[i].id}
-          lb={processedCards[i].lb}
+          lb={isBorrowingMode ? 4 : processedCards[i].lb}
           score={processedCards[i].score}
           key={processedCards[i].id + 'LB' + processedCards[i].lb}
           info={processedCards[i].info}
@@ -109,14 +128,17 @@ class TierList extends React.Component {
               c.limit_break === processedCards[i].lb,
           )}
           onClick={() =>
-            this.props.cardSelected(
-              cards.find(
-                (c) =>
-                  c.id === processedCards[i].id &&
-                  c.limit_break === processedCards[i].lb,
-              ),
-            )
+            isDisabled
+              ? undefined
+              : this.props.cardSelected(
+                  cards.find(
+                    (c) =>
+                      c.id === processedCards[i].id &&
+                      c.limit_break === processedCards[i].lb,
+                  ),
+                )
           }
+          disabled={isDisabled}
           stats={this.state.dropdownSelections}
         />,
       );
@@ -134,7 +156,7 @@ class TierList extends React.Component {
     }
 
     let count = this.props.selectedCards.filter(
-      (c) => c.type == this.props.weights.type,
+      (c) => c.type === this.props.weights.type,
     ).length;
     let dropdownOptions = [{ value: 'none', label: 'None' }];
     let properties = Object.keys(supportCardProperties).sort();
@@ -146,33 +168,59 @@ class TierList extends React.Component {
     }
 
     return (
-      <div className="tier-list">
-        <div className="selectors">
-          <span className="selectLabel">Show Stats:</span>
-          <Select
-            className="select"
-            options={dropdownOptions}
-            onChange={this.onDropdown1Changed}
-            defaultValue={{ value: 'none', label: 'None' }}
-          />
-          <Select
-            className="select"
-            options={dropdownOptions}
-            onChange={this.onDropdown2Changed}
-            defaultValue={{ value: 'none', label: 'None' }}
-          />
-          <Select
-            className="select"
-            options={dropdownOptions}
-            onChange={this.onDropdown3Changed}
-            defaultValue={{ value: 'none', label: 'None' }}
-          />
+      <div className="tier-list-container">
+        <div className="tier-list">
+          <div className="type-filter-row">
+            {[0, 1, 2, 3, 4, 6].map((type) => (
+              <input
+                key={type}
+                type="image"
+                className={
+                  this.props.type === type ? 'image-btn selected' : 'image-btn'
+                }
+                src={typeIcons[type]}
+                alt={type_names[type]}
+                title={type_names[type]}
+                onClick={() => this.props.onTypeChange(type)}
+              />
+            ))}
+          </div>
+          <div className="selectors">
+            <span className="selectLabel">Show Stats:</span>
+            <Select
+              className="select"
+              options={dropdownOptions}
+              onChange={this.onDropdown1Changed}
+              defaultValue={{ value: 'none', label: 'None' }}
+            />
+            <Select
+              className="select"
+              options={dropdownOptions}
+              onChange={this.onDropdown2Changed}
+              defaultValue={{ value: 'none', label: 'None' }}
+            />
+            <Select
+              className="select"
+              options={dropdownOptions}
+              onChange={this.onDropdown3Changed}
+              defaultValue={{ value: 'none', label: 'None' }}
+            />
+          </div>
+          <span className="label">
+            {isBorrowingMode ? (
+              <>
+                Ranking for the borrowed {type_names[this.props.weights.type]}{' '}
+                card (MLB):
+              </>
+            ) : (
+              <>
+                Ranking for the {ordinal[count]}{' '}
+                {type_names[this.props.weights.type]} card in this deck:
+              </>
+            )}
+          </span>
+          {tiers}
         </div>
-        <span className="label">
-          Ranking for the {ordinal[count]} {type_names[this.props.weights.type]}{' '}
-          card in this deck:
-        </span>
-        {tiers}
       </div>
     );
   }
@@ -325,14 +373,13 @@ function processCards(cards, weights, selectedCards) {
     let rainbowTraining = 0;
 
     let rainbowOverride = 1;
-    if (cardType != 6) {
+    if (cardType !== 6) {
       let chanceOfSingleRainbow = 0;
       let cardsOfThisType = cardsPerType[cardType].slice();
       card.rainbowSpecialty = specialtyPercent;
       card.offSpecialty = otherPercent;
       cardsOfThisType.push(card);
       for (let j = 0; j < cardsOfThisType.length; j++) {
-        console.log(cardsOfThisType);
         chanceOfSingleRainbow += CalculateCombinationChance(
           [cardsOfThisType[j]],
           cardsOfThisType,
@@ -344,7 +391,7 @@ function processCards(cards, weights, selectedCards) {
 
     // Calculate appearance rates on each training
     for (let stat = 0; stat < 5; stat++) {
-      if (stat == cardType) {
+      if (stat === cardType) {
         rainbowTraining = specialtyPercent * rainbowDays * rainbowOverride;
         daysPerTraining[stat] = specialtyPercent * daysToBond;
       } else {
@@ -426,7 +473,7 @@ function processCards(cards, weights, selectedCards) {
       info.non_rainbow_gains[6] +=
         daysOnThisTraining * gains[6] * card.fs_energy;
 
-      if (training == 4 && card.group) {
+      if (training === 4 && card.group) {
         energyGain += (daysOnThisTraining * card.wisdom_recovery) / 5;
       }
     }
@@ -482,6 +529,19 @@ function processCards(cards, weights, selectedCards) {
     if (weights.scenarioLink.indexOf(card.char_name) > -1) {
       score += weights.scenarioBonus;
     }
+
+    // Calculate individual stat scores for display
+    const statScores = [];
+    for (let stat = 0; stat < 6; stat++) {
+      const cappedGain = Math.min(statGains[stat], weights.cap);
+      const statScore = cappedGain * weights.stats[stat];
+      statScores.push(Math.round(statScore));
+    }
+    // Add energy score
+    statScores.push(Math.round(energyGain * weights.stats[6]));
+
+    info.stat_scores = statScores;
+    info.total_score = Math.round(score);
 
     processedCards.push({
       id: card.id,
@@ -546,7 +606,7 @@ function CalculateTrainingGain(
     }
   }
 
-  if (otherCards.length == 0) return trainingGains;
+  if (otherCards.length === 0) return trainingGains;
 
   const combinations = GetCombinations(otherCards);
 
@@ -786,3 +846,4 @@ function CalculateCombinationChance(combination, cards, trainingType) {
 }
 
 export default TierList;
+export { processCards };
