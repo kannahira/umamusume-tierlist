@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/umamusume-tierlist/static/css/main.d470f40a.css",
-    "main.js": "/umamusume-tierlist/static/js/main.e5097a84.js",
-    "static/js/787.265e4373.chunk.js": "/umamusume-tierlist/static/js/787.265e4373.chunk.js",
+    "main.css": "/umamusume-tierlist/static/css/main.abba5a50.css",
+    "main.js": "/umamusume-tierlist/static/js/main.3b4e7aca.js",
+    "static/js/453.171f3325.chunk.js": "/umamusume-tierlist/static/js/453.171f3325.chunk.js",
     "index.html": "/umamusume-tierlist/index.html",
-    "main.d470f40a.css.map": "/umamusume-tierlist/static/css/main.d470f40a.css.map",
-    "main.e5097a84.js.map": "/umamusume-tierlist/static/js/main.e5097a84.js.map",
-    "787.265e4373.chunk.js.map": "/umamusume-tierlist/static/js/787.265e4373.chunk.js.map"
+    "main.abba5a50.css.map": "/umamusume-tierlist/static/css/main.abba5a50.css.map",
+    "main.3b4e7aca.js.map": "/umamusume-tierlist/static/js/main.3b4e7aca.js.map",
+    "453.171f3325.chunk.js.map": "/umamusume-tierlist/static/js/453.171f3325.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d470f40a.css",
-    "static/js/main.e5097a84.js"
+    "static/css/main.abba5a50.css",
+    "static/js/main.3b4e7aca.js"
   ]
 }
