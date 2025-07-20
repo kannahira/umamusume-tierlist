@@ -144,7 +144,6 @@ function SelectedCards(props) {
 
   // Calculate total deck score using processCards from TierList.js
   let totalScore = null;
-  let statBreakdown = null;
   if (props.selectedCards.length + (props.borrowedCard ? 1 : 0) === 6) {
     // Build the 6-card deck
     const deck = props.selectedCards.slice();
@@ -157,7 +156,6 @@ function SelectedCards(props) {
     );
     if (processed.length > 0) {
       totalScore = Math.round(processed[0].score);
-      statBreakdown = processed[0].info.stat_scores;
     }
   }
 
@@ -189,7 +187,11 @@ function SelectedCards(props) {
         </div>
       )}
       <div class="link">
-        <a href={getEventHelperURL(props.selectedCards)} target="_blank">
+        <a
+          href={getEventHelperURL(props.selectedCards)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Open in Gametora Event Helper
         </a>
       </div>

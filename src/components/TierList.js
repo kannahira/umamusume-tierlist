@@ -258,7 +258,7 @@ function processCards(cards, weights, selectedCards) {
     selectedCard.index = card;
     presentTypes[selectedCard.cardType] = true;
     cardsPerType[selectedCard.cardType].push(selectedCard);
-    if (selectedCard.cardType == 6) {
+    if (selectedCard.cardType === 6) {
       baseBondNeeded += 55 - selectedCard.sb;
     } else {
       baseBondNeeded += 75 - selectedCard.sb;
@@ -270,7 +270,7 @@ function processCards(cards, weights, selectedCards) {
 
   let preferredRainbowChances = [0, 0, 0, 0, 0];
   for (let i = 0; i < 5; i++) {
-    if (i != weights.type) {
+    if (i !== weights.type) {
       if (cardsPerType[i].length > 0) {
         let minimum = 1;
         if (weights.prioritize) {
@@ -298,7 +298,7 @@ function processCards(cards, weights, selectedCards) {
     let cardType = card.type;
     card.index = 6;
     let bondNeeded = baseBondNeeded;
-    if (cardType == 6) {
+    if (cardType === 6) {
       bondNeeded += 55 - card.sb;
     } else {
       bondNeeded += 75 - card.sb;
@@ -834,7 +834,7 @@ function CalculateCombinationChance(combination, cards, trainingType) {
 
   if (cards) {
     const otherCards = cards.filter(
-      (c) => combination.findIndex((d) => c.index == d.index) === -1,
+      (c) => combination.findIndex((d) => c.index === d.index) === -1,
     );
     chance = otherCards.reduce((current, card) => {
       if (card.cardType === trainingType) {

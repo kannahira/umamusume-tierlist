@@ -465,7 +465,7 @@ class Weights extends React.Component {
       let savedWeights = window.localStorage.getItem('weights');
       if (savedWeights !== null) {
         savedWeights = JSON.parse(savedWeights);
-        if (savedWeights.version == defaultMANTState().version) {
+        if (savedWeights.version === defaultMANTState().version) {
           this.state = savedWeights;
           return this.props.onChange(
             this.state[this.state.currentState],

@@ -11,17 +11,6 @@ import {
   GLOBAL_LATEST_SSR_ID,
 } from './constants';
 
-const ordinal = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th'];
-const type_names = [
-  'Speed',
-  'Stamina',
-  'Power',
-  'Guts',
-  'Wisdom',
-  '',
-  'Friend',
-];
-
 // Helper to filter cards for global
 function filterGlobalCards(cardList) {
   return cardList.filter((card) => {
