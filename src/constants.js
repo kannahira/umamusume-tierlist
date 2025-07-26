@@ -31,5 +31,5 @@ export const supportCardProperties = {
 
 // Latest global support card IDs (update these as new cards are released)
 export const GLOBAL_LATEST_R_ID = 10052;
-export const GLOBAL_LATEST_SR_ID = 20026;
-export const GLOBAL_LATEST_SSR_ID = 30030;
+export const GLOBAL_LATEST_SR_ID = 20035;
+export const GLOBAL_LATEST_SSR_ID = 30054;
